@@ -1,0 +1,12 @@
+SYSNEAT
+=======
+
+Sysneat is a small Linux init program.
+
+To install sysneat, either use kernel's init parameter to specify the
+address of sysneat, or copy sysneat to /sbin/init.  Also copy rc.up,
+rc.down, and rc.local to /etc.  Edit rc.local to configure network,
+to set host name, and to start daemons.
+
++ To reboot send SIGINT: kill -INT 1
++ To poweroff send SIGUSR1: kill -USR1 1

@@ -1,0 +1,12 @@
+#!/bin/sh
+
+hostname localhost
+dmesg -n 1
+setterm -blank 15
+
+# Configure network
+#/etc/rc.d/lo start
+#/etc/rc.d/net start
+
+# Start daemons
+#/etc/rc.d/sshd start
