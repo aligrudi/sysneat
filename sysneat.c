@@ -25,15 +25,12 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#define M(s)	("\33[1;34m" s "\33[0m")
+
 static char *rc[] = {"/etc/rc.up", NULL};
 static char *rc_down[] = {"/etc/rc.down", NULL};
 static char *rc_tty1[] = {"/sbin/getty", "38400", "tty1", "linux", NULL};
 static char *rc_tty2[] = {"/sbin/getty", "38400", "tty2", "linux", NULL};
-
-static int msg(char *s)
-{
-	return printf("\33[1;34m%s\33[0m\n", s);
-}
 
 static int run(char *argv[], char *tty)
 {
@@ -49,11 +46,11 @@ static int run(char *argv[], char *tty)
 			dup(0);
 		}
 		execvp(argv[0], argv);
-		fprintf(stderr, "sysneat: exec failed (%s)\n", argv[0]);
+		fprintf(stderr, M("sysneat: exec failed (%s)\n"), argv[0]);
 		exit(1);
 	}
 	if (ret < 0)
-		fprintf(stderr, "sysneat: fork failed\n");
+		fprintf(stderr, M("sysneat: fork failed\n"));
 	if (ret > 0)
 		waitpid(ret, NULL, 0);
 	return ret < 0;
@@ -82,16 +79,16 @@ static void sigboot(int signo)
 {
 	if (fork() != 0)
 		return;
-	msg("SYSNEAT: STOPPING...");
-	msg("+ sending SIGTERM...");
+	printf(M("SYSNEAT: STOPPING..."));
+	printf(M("+ sending SIGTERM..."));
 	kill(-1, SIGTERM);
 	sleep(5);
-	msg("+ sending SIGKILL...");
+	printf(M("+ sending SIGKILL..."));
 	kill(-1, SIGKILL);
-	msg("+ running rc scripts...");
+	printf(M("+ running rc scripts..."));
 	sync();
 	run(rc_down, NULL);
-	msg("+ halting...");
+	printf(M("+ halting..."));
 	sleep(3);
 	if (signo == SIGINT)
 		reboot(RB_AUTOBOOT);
@@ -101,13 +98,13 @@ static void sigboot(int signo)
 
 int main(void)
 {
-	msg("SYSNEAT: USERSPACE INIT");
+	printf(M("SYSNEAT: USERSPACE INIT"));
 	signal(SIGUSR1, sigboot);
 	signal(SIGUSR2, sigboot);
 	signal(SIGINT, sigboot);
 	signal(SIGCHLD, sigchld);
 
-	msg("+ mounting base filesystem...");
+	printf(M("+ mounting base filesystem..."));
 	mount("none", "/proc", "proc", 0, NULL);
 	mount("dev", "/dev", "devtmpfs", MS_NOSUID | MS_NOATIME, NULL);
 	mount("sys", "/sys", "sysfs", MS_NOSUID | MS_NOATIME, NULL);
@@ -115,13 +112,13 @@ int main(void)
 	mkdir("/dev/pts", 0755);
 	mount("pts", "/dev/pts", "devpts", MS_NOSUID | MS_NOATIME, NULL);
 
-	msg("+ running init scripts...");
+	printf(M("+ running init scripts..."));
 	setenv("USER", "root", 0);
 	setenv("HOME", "/", 0);
 	run(rc, NULL);
 	run_repeat(rc_tty1, "/dev/tty1");
 	run_repeat(rc_tty2, "/dev/tty2");
-	msg("+ done.");
+	printf(M("+ done."));
 	while (1)
 		sleep(3600);
 	return 0;
