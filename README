@@ -1,7 +1,9 @@
 SYSNEAT
 =======
 
-Sysneat is a small Linux init program.
+Sysneat is a small Linux init program.  It is similar to, though much
+simpler than, SysVinit: it does not read inittab and, except spawning
+two gettys, it does not manage daemons directly.
 
 To install sysneat, either use kernel's init parameter to specify the
 address of sysneat, or copy sysneat to /sbin/init.  Also copy rc.up,
