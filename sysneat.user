@@ -1,0 +1,20 @@
+#!/bin/sh
+# Sysneat user script
+
+if test "$1" = "up"; then
+	hostname localhost
+	dmesg -n 1
+	setterm -blank 15
+
+	# Configure network
+	#/etc/rc.d/lo start
+	#/etc/rc.d/net start
+
+	# Start daemons
+	#/etc/rc.d/sshd start
+fi
+
+if test "$1" = "down"; then
+	# Stop daemons
+	#/etc/rc.d/sshd stop
+fi

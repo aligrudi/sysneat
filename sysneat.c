@@ -77,18 +77,25 @@ static void sigchld(int signo)
 
 static void sigboot(int signo)
 {
-	char *rc[] = {RC, "down", NULL};
+	char *rc_down[] = {RC, "down", NULL};
+	char *rc_halt[] = {RC, "halt", NULL};
 	if (fork() != 0)
 		return;
 	printf(M("SYSNEAT: STOPPING..."));
+	printf(M("+ sysneat.sh down..."));
+	run(rc_down, NULL);
+
 	printf(M("+ sending SIGTERM..."));
 	kill(-1, SIGTERM);
 	sleep(5);
+
 	printf(M("+ sending SIGKILL..."));
 	kill(-1, SIGKILL);
-	printf(M("+ running rc scripts..."));
+
+	printf(M("+ sysneat.sh halt..."));
 	sync();
-	run(rc, NULL);
+	run(rc_halt, NULL);
+
 	printf(M("+ halting..."));
 	sleep(3);
 	if (signo == SIGINT)
@@ -114,13 +121,13 @@ int main(void)
 	mkdir("/dev/pts", 0755);
 	mount("pts", "/dev/pts", "devpts", MS_NOSUID | MS_NOATIME, NULL);
 
-	printf(M("+ running init scripts..."));
+	printf(M("+ sysneat.sh up..."));
 	setenv("USER", "root", 0);
 	setenv("HOME", "/", 0);
 	run(rc, NULL);
+	printf(M("+ spawning gettys..."));
 	run_repeat(rc_tty1, "/dev/tty1");
 	run_repeat(rc_tty2, "/dev/tty2");
-	printf(M("+ done."));
 	while (1)
 		sleep(3600);
 	return 0;

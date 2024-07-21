@@ -1,9 +1,11 @@
 #!/bin/sh
 # Sysneat script
 
-if test "$1" = "up"; then
-	/bin/mount -o remount,ro /
+SYSUSR="/etc/sysneat.user"
 
+# system is up
+sysneat_up() {
+	/bin/mount -o remount,ro /
 	echo 0 >/proc/sys/kernel/ctrl-alt-del
 
 	/sbin/fsck -A -T -C -a
@@ -27,10 +29,16 @@ if test "$1" = "up"; then
 	/sbin/hwclock --hctosys
 	/bin/dmesg >/var/log/boot
 
-	/etc/rc.local
-fi
+	test -x $SYSUSR && $SYSUSR up
+}
 
-if test "$1" = "down"; then
+# system is going down
+sysneat_down() {
+	test -x $SYSUSR && $SYSUSR down
+}
+
+# system is down
+sysneat_halt() {
 	/sbin/hwclock --systohc
 
 	if ! /bin/mount -o remount,ro /; then
@@ -39,4 +47,6 @@ if test "$1" = "down"; then
 	if ! /bin/umount -a -d -r; then
 		/bin/sh
 	fi
-fi
+}
+
+sysneat_"$@"

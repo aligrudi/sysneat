@@ -7,8 +7,8 @@ two gettys, it does not manage daemons directly.
 
 To install sysneat, either use kernel's init parameter to specify the
 address of sysneat, or copy sysneat to /sbin/init.  Also copy
-sysneat.sh and rc.local to /etc.  Edit rc.local to configure network,
-to set host name, and to start daemons.
+sysneat.sh and sysneat.user to /etc.  Edit sysneat.user to configure
+network, to set host name, and to start daemons.
 
 + For reboot: kill -INT 1
 + For poweroff: kill -USR1 1
