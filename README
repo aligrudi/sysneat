@@ -6,9 +6,9 @@ simpler than, SysVinit: it does not read inittab and, except spawning
 two gettys, it does not manage daemons directly.
 
 To install sysneat, either use kernel's init parameter to specify the
-address of sysneat, or copy sysneat to /sbin/init.  Also copy rc.up,
-rc.down, and rc.local to /etc.  Edit rc.local to configure network,
+address of sysneat, or copy sysneat to /sbin/init.  Also copy
+sysneat.sh and rc.local to /etc.  Edit rc.local to configure network,
 to set host name, and to start daemons.
 
-+ To reboot send SIGINT: kill -INT 1
-+ To poweroff send SIGUSR1: kill -USR1 1
++ For reboot: kill -INT 1
++ For poweroff: kill -USR1 1

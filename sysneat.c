@@ -25,10 +25,10 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#define RC	"/etc/sysneat.sh"
+
 #define M(s)	("\33[1;34m" s "\33[0m\n")
 
-static char *rc[] = {"/etc/rc.up", NULL};
-static char *rc_down[] = {"/etc/rc.down", NULL};
 static char *rc_tty1[] = {"/sbin/getty", "38400", "tty1", "linux", NULL};
 static char *rc_tty2[] = {"/sbin/getty", "38400", "tty2", "linux", NULL};
 
@@ -77,6 +77,7 @@ static void sigchld(int signo)
 
 static void sigboot(int signo)
 {
+	char *rc[] = {RC, "down", NULL};
 	if (fork() != 0)
 		return;
 	printf(M("SYSNEAT: STOPPING..."));
@@ -87,7 +88,7 @@ static void sigboot(int signo)
 	kill(-1, SIGKILL);
 	printf(M("+ running rc scripts..."));
 	sync();
-	run(rc_down, NULL);
+	run(rc, NULL);
 	printf(M("+ halting..."));
 	sleep(3);
 	if (signo == SIGINT)
@@ -98,6 +99,7 @@ static void sigboot(int signo)
 
 int main(void)
 {
+	char *rc[] = {RC, "up", NULL};
 	printf(M("SYSNEAT: USERSPACE INIT"));
 	signal(SIGUSR1, sigboot);
 	signal(SIGUSR2, sigboot);
