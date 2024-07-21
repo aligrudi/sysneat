@@ -25,7 +25,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#define M(s)	("\33[1;34m" s "\33[0m")
+#define M(s)	("\33[1;34m" s "\33[0m\n")
 
 static char *rc[] = {"/etc/rc.up", NULL};
 static char *rc_down[] = {"/etc/rc.down", NULL};
