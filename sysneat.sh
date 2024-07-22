@@ -41,9 +41,6 @@ sysneat_down() {
 sysneat_halt() {
 	/sbin/hwclock --systohc
 
-	if ! /bin/mount -o remount,ro /; then
-		/bin/sh
-	fi
 	if ! /bin/umount -a -d -r; then
 		/bin/sh
 	fi
