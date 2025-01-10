@@ -8,7 +8,7 @@ sysneat_up() {
 	/bin/mount -o remount,ro /
 	echo 0 >/proc/sys/kernel/ctrl-alt-del
 
-	/sbin/fsck -A -T -C -a
+	/sbin/fsck -A -T -C1 -p
 	if test "$?" -gt 1; then
 		echo
 		echo "FSCK FAILED!"
